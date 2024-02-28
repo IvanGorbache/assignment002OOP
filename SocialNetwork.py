@@ -10,6 +10,8 @@ class SocialNetwork:
             SocialNetwork(name)
 
     def __init__(self, name):
+        if SocialNetwork.__instance is not None:
+            raise Exception("Exception: Network already exists!")
         self.name = name
         self.users = {}
         SocialNetwork.__instance = self
@@ -21,12 +23,12 @@ class SocialNetwork:
             return self.users[username]
 
     def log_in(self, username, password):
-        if username in self.users and password == self.users[username].get_password():
+        if username in self.users and password == self.users[username].get_password() and not self.users[username].is_online():
             print(self.users[username].get_username(), "connected")
             self.users[username].go_online()
 
     def log_out(self, username):
-        if username in self.users:
+        if username in self.users and self.users[username].is_online():
             print(self.users[username].get_username(), "disconnected")
             self.users[username].go_offline()
 
