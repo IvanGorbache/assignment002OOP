@@ -12,11 +12,12 @@ class User(object):
         self.__online = True
 
     def follow(self, userToFollow):
-        try:
-            if self not in userToFollow.get_followers():
-                userToFollow.add_follower(self)
-        except TypeError:
-            raise Exception("User does not exist!")
+        if self.__online:
+            try:
+                if self not in userToFollow.get_followers():
+                    userToFollow.add_follower(self)
+            except TypeError:
+                raise Exception("User does not exist!")
 
     def add_follower(self, follower):
         if follower not in self.__followers:
@@ -24,12 +25,13 @@ class User(object):
             self.__followers.append(follower)
 
     def unfollow(self, userToUnfollow):
-        try:
-            if self in userToUnfollow.get_followers():
-                NotificationManager.unsubscribe(self, userToUnfollow)
-                userToUnfollow.remove_follower(self)
-        except TypeError:
-            raise Exception("User does not exist!")
+        if self.__online:
+            try:
+                if self in userToUnfollow.get_followers():
+                    NotificationManager.unsubscribe(self, userToUnfollow)
+                    userToUnfollow.remove_follower(self)
+            except TypeError:
+                raise Exception("User does not exist!")
 
     def remove_follower(self, userToRemove):
         if userToRemove in self.__followers:
@@ -52,7 +54,8 @@ class User(object):
         self.__online = False
 
     def print_notifications(self):
-        NotificationManager.notify(self)
+        if self.__online:
+            NotificationManager.notify(self)
 
     def get_username(self):
         return self.__username
