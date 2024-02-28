@@ -18,9 +18,14 @@ class SocialNetwork:
         print("The social network {} was created!".format(name))
 
     def sign_up(self, username, password):
-        if username not in self.users and 4 < len(password) < 8:
-            self.users[username] = User(username, password)
-            return self.users[username]
+        if username not in self.users:
+            if 4 < len(password) < 8:
+                self.users[username] = User(username, password, self)
+                return self.users[username]
+            else:
+                raise Exception("Password must be between 4 to 8 characters")
+        else:
+            raise Exception("User already exists!")
 
     def log_in(self, username, password):
         if username in self.users and password == self.users[username].get_password() and not self.users[username].is_online():
@@ -31,6 +36,9 @@ class SocialNetwork:
         if username in self.users and self.users[username].is_online():
             print(self.users[username].get_username(), "disconnected")
             self.users[username].go_offline()
+
+    def does_user_exist(self, username):
+        return username in self.users
 
     def __str__(self):
         description = "{} social network:".format(self.name)

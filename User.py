@@ -4,7 +4,8 @@ from Notification import Notification
 
 
 class User(object):
-    def __init__(self, username, password):
+    def __init__(self, username, password, network):
+        self.__network = network
         self.__username = username
         self.__password = password
         self.__posts = []
@@ -13,28 +14,26 @@ class User(object):
 
     def follow(self, userToFollow):
         if self.__online:
-            try:
-                if self not in userToFollow.get_followers():
-                    userToFollow.add_follower(self)
-            except TypeError:
-                raise Exception("User does not exist!")
+            if self.__network.does_user_exist(userToFollow.get_username()) and self not in userToFollow.get_followers():
+                userToFollow.add_follower(self)
+            else:
+                raise Exception("User already followed!")
 
     def add_follower(self, follower):
-        if follower not in self.__followers:
+        if self.__network.does_user_exist(follower.get_username()) and follower not in self.__followers:
             print("{} started following {}".format(follower.get_username(), self.__username))
             self.__followers.append(follower)
 
     def unfollow(self, userToUnfollow):
         if self.__online:
-            try:
-                if self in userToUnfollow.get_followers():
-                    NotificationManager.unsubscribe(self, userToUnfollow)
-                    userToUnfollow.remove_follower(self)
-            except TypeError:
-                raise Exception("User does not exist!")
+            if self.__network.does_user_exist(userToUnfollow.get_username()) and self in userToUnfollow.get_followers():
+                NotificationManager.unsubscribe(self, userToUnfollow)
+                userToUnfollow.remove_follower(self)
+            else:
+                raise Exception("User wasn't followed in the first place!")
 
     def remove_follower(self, userToRemove):
-        if userToRemove in self.__followers:
+        if self.__network.does_user_exist(userToRemove.get_username()) and userToRemove in self.__followers:
             print("{} unfollowed {}".format(userToRemove.get_username(), self.__username))
             self.__followers.remove(userToRemove)
 

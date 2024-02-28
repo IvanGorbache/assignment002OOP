@@ -2,6 +2,7 @@ from AbstractPost import AbstractPost
 from NotificationManager import NotificationManager
 from Notification import Notification
 
+
 class TextPost(AbstractPost):
 
     def __init__(self, user, text):

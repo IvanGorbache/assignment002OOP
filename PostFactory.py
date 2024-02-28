@@ -13,3 +13,5 @@ class PostFactory:
             return ImagePost(user, arg[0])
         elif postType == "Sale":
             return SalePost(user, arg[0], arg[1], arg[2])
+        else:
+            raise Exception("Post type doesn't exist!")
